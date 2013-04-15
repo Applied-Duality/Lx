@@ -64,7 +64,8 @@ namespace Playground
                 // NOTE: I do not fully understand the e.Text.Matches(...) part
                 // documentation for that on http://loggly.com/support/using-data/search-guide/ is skimpy
                 var q = await from e in r.QueryEventsAsync()
-                        where e.InputName == inputs[0].Name
+                        where e.InputName == inputs[0].Name 
+                           && e["alert"].Matches("Oops*")
                         select e;
 
                 // Show us what you got ...

@@ -5,6 +5,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Json;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
@@ -52,6 +53,21 @@ namespace Loggly.Retrieval
             return this.Take(10).GetAwaiter();
         }
 
+
+        public struct JsonContent
+        {
+            string _field;
+            public JsonContent(string field)
+            {
+                _field = field;
+            }
+
+            public Bool Matches(string pattern)
+            {
+                return new Bool(string.Format("json.{0}:{1}", _field, pattern));
+            }
+
+        }
         public struct IP
         {
             public Bool Matches(string pattern)
@@ -72,17 +88,17 @@ namespace Loggly.Retrieval
             {
                 return new Bool(string.Format("inputname:{0}", name));
             }
-
-            public static Bool operator ==(string name, Name _)
-            {
-                return (_ == name);
-            }
-
+            
             [Obsolete]
             [EditorBrowsable(EditorBrowsableState.Never)]
             public static Bool operator !=(Name _, string name)
             {
                 throw new NotImplementedException();
+            }
+
+            public static Bool operator ==(string name, Name _)
+            {
+                return (_ == name);
             }
 
             [Obsolete]
@@ -128,6 +144,7 @@ namespace Loggly.Retrieval
             public IP Ip { get { return new IP(); } }
             public Pattern Text { get { return new Pattern(); } }
             public Name InputName { get { return new Name(); } }
+            public JsonContent this[string field] { get { return new JsonContent(field); } }
         }
     }
 }

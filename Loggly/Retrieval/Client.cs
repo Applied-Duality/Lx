@@ -19,7 +19,7 @@ namespace Loggly.Retrieval
         {
             _client = new HttpClient();
             var header = new AuthenticationHeaderValue
-                            ("Basic"
+                            ( "Basic"
                             , Convert.ToBase64String(UTF8Encoding.UTF8.GetBytes(string.Format("{0}:{1}", username, password)))
                             );
             _client.DefaultRequestHeaders.Authorization = header;

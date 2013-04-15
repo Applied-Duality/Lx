@@ -16,6 +16,35 @@ namespace Loggly
      
     public enum EventFormat { Other, Text, Json }
 
+    public static class SearchResults
+    {
+        public static SearchResult[] Parse(string json)
+        {
+            dynamic _json = JsonValue.Parse(json);
+            var xs = _json.data as IEnumerable<JsonValue>;
+            return (xs).Select(input => new SearchResult(input)).ToArray();
+        }
+    }
+
+    public struct SearchResult
+    {
+        dynamic _json;
+        public SearchResult(string json):this(JsonValue.Parse(json)){ }
+        public SearchResult(JsonValue json) { this._json = json; }
+
+        public bool IsJson { get { return _json.isjson; } }
+        public DateTimeOffset TimeStamp { get { return DateTimeOffset.Parse((string)_json.timestamp); } }
+        public string InputName { get { return _json.inputname; } }
+        public int InputId { get { return _json.inputid; } }
+        public string Ip { get { return _json.ip; } }
+        public JsonValue Json { get { return _json.json; } }
+
+        public override string ToString()
+        {
+            return _json.ToString();
+        }
+    }
+
     public struct Service
     {
         dynamic _json;

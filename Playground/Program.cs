@@ -36,7 +36,7 @@ namespace Playground
 
             // Create new tmp input 
             // Might change/add API to GetOrCreate like IronMQ
-            var tmp = await r.CreateHttpInputAsync("tmp");
+            var tmp = await r.CreateHttpInputAsync("tmp100");
 
             // Look up the newly created input
             var inputs = await from i in r.GetInputsAsync()

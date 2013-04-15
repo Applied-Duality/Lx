@@ -35,7 +35,7 @@ namespace Loggly.Retrieval
             _take = take;
         }
 
-        async Task<string> _GetEventsAsync()
+        async Task<SearchResult[]> _GetEventsAsync()
         {
             var query = new Dictionary<string, string>();
 
@@ -76,16 +76,17 @@ namespace Loggly.Retrieval
 
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadAsStringAsync();
+                var results = await response.Content.ReadAsStringAsync();
+                return SearchResults.Parse(results);
             }
             else
             {
-                return "";
+                return new SearchResult[]{};
             }
         }
 
         // TODO: parse result
-        public TaskAwaiter<string> GetAwaiter()
+        public TaskAwaiter<SearchResult[]> GetAwaiter()
         {
             return _GetEventsAsync().GetAwaiter();
         }

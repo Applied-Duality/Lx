@@ -117,6 +117,12 @@ namespace Loggly.Retrieval
                 return false;
             }
         }
+
+        //
+        // TODO add support for Json search and figure out search API precise semantics and syntax
+        // http://loggly.com/support/using-data/search-basics/
+        // http://loggly.com/support/using-data/search-guide/
+        //
         public struct Event
         {
             public IP Ip { get { return new IP(); } }

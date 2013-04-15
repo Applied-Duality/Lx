@@ -89,11 +89,9 @@ namespace Loggly.Retrieval
                 return new Bool(string.Format("inputname:{0}", name));
             }
             
-            [Obsolete]
-            [EditorBrowsable(EditorBrowsableState.Never)]
             public static Bool operator !=(Name _, string name)
             {
-                throw new NotImplementedException();
+                return new Bool(string.Format("-inputname:{0}", name));
             }
 
             public static Bool operator ==(string name, Name _)
@@ -101,11 +99,9 @@ namespace Loggly.Retrieval
                 return (_ == name);
             }
 
-            [Obsolete]
-            [EditorBrowsable(EditorBrowsableState.Never)]
             public static Bool operator !=(string name, Name _)
             {
-                throw new NotImplementedException();
+                return (_ != name);
             }
         }
         public struct Bool
@@ -120,6 +116,10 @@ namespace Loggly.Retrieval
             public static Bool operator |(Bool left, Bool right)
             {
                 return new Bool(string.Format("({0} OR {1})", left._pattern, right._pattern));
+            }
+            public static Bool operator !(Bool left)
+            {
+                return new Bool(string.Format("-{0}", left._pattern));
             }
 
             // http://stackoverflow.com/questions/5203093/how-does-operator-overloading-of-true-and-false-work/5203185#5203185

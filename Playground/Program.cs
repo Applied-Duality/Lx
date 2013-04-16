@@ -65,10 +65,10 @@ namespace Playground
                 // Check if the values were received
                 // NOTE: I do not fully understand the e.Text.Matches(...) part
                 // documentation for that on http://loggly.com/support/using-data/search-guide/ is skimpy
-                var q = await from e in r.QueryEventsAsync()
+                var q = await (from e in r.QueryEventsAsync()
                         where e.InputName == tmp.Value.Name
                            && e["alert"].Matches("O*") //!e["alert"].Matches("Z*")
-                        select e;
+                        select e).Skip(5).Take(20);
 
                 // Show us what you got ...
                 Console.WriteLine("found {0} results", q.Length);

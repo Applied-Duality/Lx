@@ -85,7 +85,6 @@ namespace Loggly.Retrieval
             }
         }
 
-        // TODO: parse result
         public TaskAwaiter<SearchResult[]> GetAwaiter()
         {
             return _GetEventsAsync().GetAwaiter();

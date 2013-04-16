@@ -41,11 +41,11 @@ namespace Loggly.Retrieval
         }
         public SkippedEvents Skip(int n)
         {
-            return new SkippedEvents(_client, _pattern, _timeRange, true, null, 0);
+            return new SkippedEvents(_client, _pattern, _timeRange, true, null, n);
         }
         public TakenEvents Take(int n)
         {
-            return new TakenEvents(_client, _pattern, _timeRange, true, null, 0, 10);
+            return new TakenEvents(_client, _pattern, _timeRange, true, null, 0, n);
         }
         public TaskAwaiter<SearchResult[]> GetAwaiter()
         {

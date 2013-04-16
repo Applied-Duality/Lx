@@ -15,11 +15,11 @@ namespace Loggly.Retrieval
         HttpClient _client;
         internal Inputs(HttpClient client) { _client = client; }
 
-        public FilteredInputs Where(Expression<Func<FilteredInputs.Input, FilteredInputs.Bool>> predicate)
+        public FilteredInputs Where(Func<FilteredInputs.Input, FilteredInputs.Bool> predicate)
         {
             return new FilteredInputs(_client, predicate);
         }
-        public SelectedInputs Select(Expression<Func<SelectedInputs.Input, SelectedInputs.Input>> selector)
+        public SelectedInputs Select(Func<SelectedInputs.Input, SelectedInputs.Input> selector)
         {
             return new SelectedInputs(_client, null);
         }

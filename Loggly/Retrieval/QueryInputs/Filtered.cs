@@ -14,9 +14,9 @@ namespace Loggly.Retrieval
     public class FilteredInputs
     {
         HttpClient _client;
-        public Expression<Func<Input, Bool>> _predicate;
+        public Func<Input, Bool> _predicate;
 
-        internal FilteredInputs(HttpClient client, Expression<Func<Input, Bool>> predicate)
+        internal FilteredInputs(HttpClient client, Func<Input, Bool> predicate)
         {
             _client = client;
             _predicate = predicate;

@@ -15,9 +15,9 @@ namespace Loggly.Retrieval
     public class SelectedInputs
     {
         HttpClient _client;
-        Expression<Func<FilteredInputs.Input, FilteredInputs.Bool>> _predicate;
+        Func<FilteredInputs.Input, FilteredInputs.Bool> _predicate;
 
-        internal SelectedInputs(HttpClient client, Expression<Func<FilteredInputs.Input, FilteredInputs.Bool>> predicate)
+        internal SelectedInputs(HttpClient client, Func<FilteredInputs.Input, FilteredInputs.Bool> predicate)
         {
             _client = client;
             _predicate = predicate;
@@ -29,7 +29,7 @@ namespace Loggly.Retrieval
 
             if (_predicate != null)
             {
-                var b = _predicate.Compile()(default(FilteredInputs.Input));
+                var b = _predicate(default(FilteredInputs.Input));
                 if (!string.IsNullOrWhiteSpace(b._name)) query = string.Format("?name={0}", b._name);
                 else if (b._id != 0) query = string.Format("{0}", b._id);
             }

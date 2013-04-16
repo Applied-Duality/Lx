@@ -9,6 +9,7 @@ using System.Json;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using Loggly;
 
 namespace Loggly.Retrieval
 {
@@ -27,15 +28,15 @@ namespace Loggly.Retrieval
         {
             return new DatedEvents(_client, _pattern, timeRange);
         }
-        public OrderedEvents OrderBy(Expression<Func<OrderedEvents.Event, OrderedEvents.Time>> keySelector)
+        public OrderedEvents OrderBy(Func<OrderedEvents.Event, OrderedEvents.Time> keySelector)
         {
             return new OrderedEvents(_client, _pattern, null, false);
         }
-        public OrderedEvents OrderByDescending(Expression<Func<OrderedEvents.Event, OrderedEvents.Time>> keySelector)
+        public OrderedEvents OrderByDescending(Func<OrderedEvents.Event, OrderedEvents.Time> keySelector)
         {
             return new OrderedEvents(_client, _pattern, null, true);
         }
-        public ProjectedEvents Select(Expression<Func<ProjectedEvents.Event, ProjectedEvents.Event>> selector)
+        public ProjectedEvents Select(Expression<Func<Loggly.Event, Loggly.Event>> selector)
         {
             return new ProjectedEvents(_client, _pattern, null, true, selector);
         }

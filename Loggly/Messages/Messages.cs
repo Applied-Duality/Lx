@@ -13,7 +13,17 @@ using System.Threading.Tasks;
 
 namespace Loggly
 {
-     
+    // id', 'timestamp', 'ip', 'inputname', 'text'.
+    public struct Event
+    {
+        public int Id;
+        public DateTimeOffset TimeStamp;
+        public string Ip;
+        public string Text;
+        public JsonValue Json;
+        public string InputName;
+    }
+
     public enum EventFormat { Other, Text, Json }
 
     public static class SearchResults
@@ -25,7 +35,6 @@ namespace Loggly
             return (xs).Select(input => new SearchResult(input)).ToArray();
         }
     }
-
     public struct SearchResult
     {
         dynamic _json;

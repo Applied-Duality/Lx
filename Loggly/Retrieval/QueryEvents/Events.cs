@@ -24,15 +24,15 @@ namespace Loggly.Retrieval
         {
             return new DatedEvents(_client, null, timeRange);
         }
-        public OrderedEvents OrderBy(Expression<Func<OrderedEvents.Event, OrderedEvents.Time>> keySelector)
+        public OrderedEvents OrderBy(Func<OrderedEvents.Event, OrderedEvents.Time> keySelector)
         {
             return new OrderedEvents(_client, null, null, false);
         }
-        public OrderedEvents OrderByDescending(Expression<Func<OrderedEvents.Event, OrderedEvents.Time>> keySelector)
+        public OrderedEvents OrderByDescending(Func<OrderedEvents.Event, OrderedEvents.Time> keySelector)
         {
             return new OrderedEvents(_client, null, null, true);
         }
-        public ProjectedEvents Select(Expression<Func<ProjectedEvents.Event, ProjectedEvents.Event>> selector)
+        public ProjectedEvents Select(Expression<Func<Event, Event>> selector)
         {
             return new ProjectedEvents(_client, null, null, true, selector);
         }

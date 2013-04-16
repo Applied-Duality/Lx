@@ -7,6 +7,7 @@ using System;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using Loggly;
 
 namespace Loggly.Retrieval
 {
@@ -26,7 +27,7 @@ namespace Loggly.Retrieval
             _descending = descending;
         }
 
-        public ProjectedEvents Select(Expression<Func<ProjectedEvents.Event, ProjectedEvents.Event>> selector)
+        public ProjectedEvents Select(Expression<Func<Loggly.Event, Loggly.Event>> selector)
         {
             return new ProjectedEvents(_client, _pattern, _timeRange, _descending, selector);
         }

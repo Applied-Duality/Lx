@@ -16,7 +16,7 @@ namespace Loggly.Retrieval
         Func<FilteredEvents.Event, FilteredEvents.Bool> _pattern;
         Func<DatedEvents.Event, DatedEvents.Bool> _timeRange;
         bool _descending;
-        Expression<Func<ProjectedEvents.Event, ProjectedEvents.Event>> _selector;
+        Expression<Func<Event, Event>> _selector;
         int _skip;
 
         public SkippedEvents
@@ -24,7 +24,7 @@ namespace Loggly.Retrieval
             , Func<FilteredEvents.Event, FilteredEvents.Bool> pattern
             , Func<DatedEvents.Event, DatedEvents.Bool> timeRange
             , bool descending
-            , Expression<Func<ProjectedEvents.Event, ProjectedEvents.Event>> selector
+            , Expression<Func<Event, Event>> selector
             , int skip
             )
         {

@@ -36,7 +36,9 @@ namespace Playground
 
             // Create new tmp input 
             // Might change/add API to GetOrCreate like IronMQ
-            var tmp = await r.CreateHttpInputAsync("tmp100");
+            var tmp = await r.CreateHttpInputAsync(string.Format("tmp{0}", DateTime.Now.Ticks));
+
+            Console.WriteLine(tmp.Value.Name);
 
             // Look up the newly created input
             var inputs = await from i in r.GetInputsAsync()
@@ -55,7 +57,7 @@ namespace Playground
                     // Also, despite returning 200 OK, some events seem to dissapear
                     // (or may show up much later, I don't know)
                     var b = await s.PostMessageAsync
-                            (inputs[0], new JsonObject { { "alert", string.Format("Oops I did it again {0}", n) } });
+                            (tmp.Value, new JsonObject { { "alert", string.Format("Oops I did it again {0}", n) } });
 
                     Console.WriteLine("{0}-->{1}", n, b);
                 }
@@ -64,18 +66,19 @@ namespace Playground
                 // NOTE: I do not fully understand the e.Text.Matches(...) part
                 // documentation for that on http://loggly.com/support/using-data/search-guide/ is skimpy
                 var q = await from e in r.QueryEventsAsync()
-                        where e.InputName == "tmp" 
-                           && !e["alert"].Matches("Z*")
+                        where e.InputName == tmp.Value.Name
+                           && e["alert"].Matches("O*") //!e["alert"].Matches("Z*")
                         select e;
 
                 // Show us what you got ...
-                Console.WriteLine(q);
+                Console.WriteLine("found {0} results", q.Length);
+                foreach(var result in q) Console.WriteLine(result.ToString());
             }
 
             // Clean up the queue
-            //var d = await r.DeleteHttpInputAsync(tmp.Value);
+            var d = await r.DeleteHttpInputAsync(tmp.Value);
 
-            //Console.ReadLine();
+            Console.ReadLine();
         }
     }
 }

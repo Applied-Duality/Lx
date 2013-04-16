@@ -15,15 +15,15 @@ namespace Loggly.Retrieval
     public struct FilteredEvents
     {
         HttpClient _client;
-        Expression<Func<Event, Bool>> _pattern;
+        Func<Event, Bool> _pattern;
 
-        internal FilteredEvents(HttpClient client, Expression<Func<Event, Bool>> pattern)
+        internal FilteredEvents(HttpClient client, Func<Event, Bool> pattern)
         {
             _client = client;
             _pattern = pattern;
         }
 
-        public DatedEvents Where(Expression<Func<DatedEvents.Event, DatedEvents.Bool>> timeRange)
+        public DatedEvents Where(Func<DatedEvents.Event, DatedEvents.Bool> timeRange)
         {
             return new DatedEvents(_client, _pattern, timeRange);
         }

@@ -16,15 +16,15 @@ namespace Loggly.Retrieval
     public struct TakenEvents
     {
         HttpClient _client;
-        Expression<Func<FilteredEvents.Event, FilteredEvents.Bool>> _pattern;
-        Expression<Func<DatedEvents.Event, DatedEvents.Bool>> _timeRange;
+        Func<FilteredEvents.Event, FilteredEvents.Bool> _pattern;
+        Func<DatedEvents.Event, DatedEvents.Bool> _timeRange;
         bool _descending;
         Expression<Func<ProjectedEvents.Event, ProjectedEvents.Event>> _selector;
         int _skip;
         int _take;
 
         public TakenEvents
-            (HttpClient client, Expression<Func<FilteredEvents.Event, FilteredEvents.Bool>> pattern, Expression<Func<DatedEvents.Event, DatedEvents.Bool>> timeRange, bool descending, Expression<Func<ProjectedEvents.Event, ProjectedEvents.Event>> selector, int skip, int take)
+            (HttpClient client, Func<FilteredEvents.Event, FilteredEvents.Bool> pattern, Func<DatedEvents.Event, DatedEvents.Bool> timeRange, bool descending, Expression<Func<ProjectedEvents.Event, ProjectedEvents.Event>> selector, int skip, int take)
         {
             _client = client;
             _pattern = pattern;
@@ -39,12 +39,12 @@ namespace Loggly.Retrieval
         {
             var query = new Dictionary<string, string>();
 
-            if (_pattern != null) query["q"] = _pattern.Compile()(default(FilteredEvents.Event))._pattern;
+            if (_pattern != null) query["q"] = _pattern(default(FilteredEvents.Event))._pattern;
             else query["q"] = "*";
 
             if (_timeRange != null)
             {
-                var t = _timeRange.Compile()(default(DatedEvents.Event));
+                var t = _timeRange(default(DatedEvents.Event));
                 if(t._start != default(DateTimeOffset))
                     query["from"] = t._start.ToString("yyyy-MM-dd HH:mm:ss.fffzzzz");
                 if(t._end != default(DateTimeOffset))

@@ -16,11 +16,11 @@ namespace Loggly.Retrieval
         HttpClient _client;
         public Events(HttpClient client) { _client = client; }
 
-        public FilteredEvents Where(Expression<Func<FilteredEvents.Event, FilteredEvents.Bool>> pattern)
+        public FilteredEvents Where(Func<FilteredEvents.Event, FilteredEvents.Bool> pattern)
         {
             return new FilteredEvents(_client, pattern);
         }
-        public DatedEvents Where(Expression<Func<DatedEvents.Event, DatedEvents.Bool>> timeRange)
+        public DatedEvents Where(Func<DatedEvents.Event, DatedEvents.Bool> timeRange)
         {
             return new DatedEvents(_client, null, timeRange);
         }

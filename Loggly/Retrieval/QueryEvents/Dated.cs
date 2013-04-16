@@ -14,13 +14,13 @@ namespace Loggly.Retrieval
     public struct DatedEvents
     {
         HttpClient _client;
-        Expression<Func<FilteredEvents.Event, FilteredEvents.Bool>> _pattern;
-        Expression<Func<DatedEvents.Event, DatedEvents.Bool>> _timeRange;
+        Func<FilteredEvents.Event, FilteredEvents.Bool> _pattern;
+        Func<DatedEvents.Event, DatedEvents.Bool> _timeRange;
 
         public DatedEvents
             (HttpClient client
-            , Expression<Func<FilteredEvents.Event, FilteredEvents.Bool>> pattern
-            , Expression<Func<DatedEvents.Event, DatedEvents.Bool>> timeRange)
+            , Func<FilteredEvents.Event, FilteredEvents.Bool> pattern
+            , Func<DatedEvents.Event, DatedEvents.Bool> timeRange)
         {
             _client = client;
             _pattern = pattern;

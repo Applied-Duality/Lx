@@ -57,17 +57,16 @@ namespace Playground
                     // Also, despite returning 200 OK, some events seem to dissapear
                     // (or may show up much later, I don't know)
                     var b = await s.PostMessageAsync
-                            (tmp.Value, new JsonObject { { "alert", string.Format("Oops I did it again {0}", n) } });
+                            (tmp.Value, 
+                            new JsonObject { { "alert", string.Format("Oops I did it again {0}", n) } });
 
                     Console.WriteLine("{0}-->{1}", n, b);
                 }
 
                 // Check if the values were received
-                // NOTE: I do not fully understand the e.Text.Matches(...) part
-                // documentation for that on http://loggly.com/support/using-data/search-guide/ is skimpy
                 var q = await (from e in r.QueryEventsAsync()
                         where e.InputName == tmp.Value.Name
-                           && e["alert"].Matches("O*") //!e["alert"].Matches("Z*")
+                           && e["alert"]["foo"].Matches("O*") //!e["alert"].Matches("Z*")
                         select e).Skip(5).Take(20);
 
                 // Show us what you got ...

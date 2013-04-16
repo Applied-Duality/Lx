@@ -61,10 +61,16 @@ namespace Loggly.Retrieval
             {
                 _field = field;
             }
-
             public Bool Matches(string pattern)
             {
                 return new Bool(string.Format("json.{0}:{1}", _field, pattern));
+            }
+            public JsonContent this[string field]
+            {
+                get
+                {
+                    return new JsonContent(string.Format("{0}.{1}", _field, field));
+                }
             }
 
         }

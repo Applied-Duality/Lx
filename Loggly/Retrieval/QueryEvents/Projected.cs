@@ -42,7 +42,7 @@ namespace Loggly.Retrieval
             return new TakenEvents(_client, _pattern, _timeRange, _descending, _selector, 0, n);
         }
 
-        public TaskAwaiter<SearchResult[]> GetAwaiter()
+        public TaskAwaiter<Event[]> GetAwaiter()
         {
             return this.Take(10).GetAwaiter();
         }

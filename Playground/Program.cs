@@ -68,7 +68,7 @@ namespace Playground
                 var q = await (from e in r.QueryEventsAsync()
                                where e.InputName == tmp.Value.Name
                                   && e["alert"].Matches("O*") //!e["alert"].Matches("Z*")
-                               select new Event { Ip = e.Ip });
+                               select new Event { Text = e.Text.ToUpper(), TimeStamp = e.TimeStamp });
 
                 // Show us what you got ...
                 Console.WriteLine("found {0} results", q.Length);

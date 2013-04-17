@@ -13,40 +13,46 @@ using System.Threading.Tasks;
 
 namespace Loggly
 {
-    // id', 'timestamp', 'ip', 'inputname', 'text'.
-    public struct Event
-    {
-        public int Id;
-        public DateTimeOffset TimeStamp;
-        public string Ip;
-        public string Text;
-        public JsonValue Json;
-        public string InputName;
-    }
+    //// id', 'timestamp', 'ip', 'inputname', 'text'.
+    //public struct Event
+    //{
+    //    public int Id;
+    //    public DateTimeOffset TimeStamp;
+    //    public string Ip;
+    //    public string Text;
+    //    public JsonValue Json;
+    //    public string InputName;
+    //}
 
     public enum EventFormat { Other, Text, Json }
 
     public static class SearchResults
     {
-        public static SearchResult[] Parse(string json)
+        public static IEnumerable<Event> Parse(string json)
         {
             dynamic _json = JsonValue.Parse(json);
             var xs = _json.data as IEnumerable<JsonValue>;
-            return (xs).Select(input => new SearchResult(input)).ToArray();
+            return (xs).Select(input => new Event(input));
         }
     }
-    public struct SearchResult
+    public class Event
     {
         dynamic _json;
-        public SearchResult(string json):this(JsonValue.Parse(json)){ }
-        public SearchResult(JsonValue json) { this._json = json; }
+        public Event() { _json = new JsonObject(); }
+        public Event(string json):this(JsonValue.Parse(json)){ }
+        public Event(JsonValue json) { this._json = json; }
 
-        public bool IsJson { get { return _json.isjson; } }
-        public DateTimeOffset TimeStamp { get { return DateTimeOffset.Parse((string)_json.timestamp); } }
-        public string InputName { get { return _json.inputname; } }
-        public int InputId { get { return _json.inputid; } }
-        public string Ip { get { return _json.ip; } }
-        public JsonValue Json { get { return _json.json; } }
+        public bool IsJson { get { return _json.isjson; } set { _json.isjson = value; } }
+        public DateTimeOffset TimeStamp 
+        { 
+            get { return DateTimeOffset.Parse((string)_json.timestamp); }
+            set { _json.timestamp = value.ToString(); } 
+        }
+        public string InputName { get { return _json.inputname; } set { _json.inputname = value; } }
+        public int InputId { get { return _json.inputid; } set { _json.inputid = value; }}
+        public string Ip { get { return _json.ip; } set { _json.ip = value; } }
+        public JsonValue Json { get { return _json.json; } set { _json.json = value; } }
+        public string Text { get { return _json.text; } set { _json.text = value; } }
 
         public override string ToString()
         {

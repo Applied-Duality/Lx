@@ -35,7 +35,7 @@ namespace Loggly.Retrieval
             _take = take;
         }
 
-        async Task<SearchResult[]> _GetEventsAsync()
+        async Task<Event[]> _GetEventsAsync()
         {
             var query = new Dictionary<string, string>();
 
@@ -55,16 +55,14 @@ namespace Loggly.Retrieval
 
             if (_selector != null)
             {
-                try
+                var fields = Fields.Collect(_selector.Body);
+                if (fields != null)
                 {
-                    var fields = string.Join(",",
-                            (_selector.Body as MemberInitExpression)
-                            .Bindings
-                            .Select(mb => mb.Member.Name.ToLowerInvariant()));
-                    query["fields"] = fields;
+                    query["fields"] = string.Join(",", fields);
                 }
-                catch { }
             }
+
+            
 
             if(_skip > 0) query["start"] = _skip.ToString();
 
@@ -77,17 +75,65 @@ namespace Loggly.Retrieval
             if (response.IsSuccessStatusCode)
             {
                 var results = await response.Content.ReadAsStringAsync();
-                return SearchResults.Parse(results);
+                var raw = SearchResults.Parse(results);
+                if (_selector != null)
+                {
+                    var transform = _selector.Compile();
+                    raw = raw.Select(transform);
+                }
+                return raw.ToArray();
             }
             else
             {
-                return new SearchResult[]{};
+                return new Loggly.Event[]{};
             }
         }
 
-        public TaskAwaiter<SearchResult[]> GetAwaiter()
+        public TaskAwaiter<Event[]> GetAwaiter()
         {
             return _GetEventsAsync().GetAwaiter();
+        }
+
+        // Little visitor to analyze projection function
+        class Fields : ExpressionVisitor
+        {
+            internal static List<string> Collect(Expression expr)
+            {
+                var visitor = new Fields();
+                visitor.Visit(expr);
+                return visitor._fields;
+            }
+
+            internal List<string> _fields = new List<string>();
+
+            Expression parent;
+            public override Expression Visit(Expression node)
+            {
+                if (_fields == null) return node;
+                if (node.NodeType != ExpressionType.Parameter)
+                {
+                    var _parent = parent;
+                    parent = node;
+                    var result = base.Visit(node);
+                    parent = _parent;
+                    return result;
+                }
+                return base.Visit(node);
+            }
+
+            protected override Expression VisitParameter(ParameterExpression node)
+            {
+                if (parent.NodeType == ExpressionType.MemberAccess)
+                {
+                    var field = (parent as MemberExpression).Member.Name.ToLowerInvariant();
+                    _fields.Add(field);
+                }
+                else
+                {
+                    _fields = null; // conservatively assume all members are used
+                }
+                return node;
+            }
         }
     }
 }

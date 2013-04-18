@@ -17,8 +17,6 @@ namespace Loggly.Submission
             _client = new HttpClient();
         }
 
-        /// <summary>
-        /// </summary>
         public async Task<bool> PostMessageAsync(HttpInput input, JsonValue json)
         {
             var content = new JsonContent(json);

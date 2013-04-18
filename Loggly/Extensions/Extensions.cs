@@ -11,7 +11,18 @@ namespace Loggly
     {
         public static async void ToBackGround(this Task task)
         {
-            try{ await task; } catch {}
+            try { await task; } catch { }
+        }
+
+        public static string Serialize<T>(this T value)
+        {
+            return ServiceStack.Text.TypeSerializer.SerializeToString<T>(value);
+        }
+
+        public static T Deserialize<T>(this string s, T dummy)
+        {
+            ServiceStack.Text.TypeConfig<T>.EnableAnonymousFieldSetters = true;
+            return ServiceStack.Text.TypeSerializer.DeserializeFromString<T>(s);
         }
     }
 }

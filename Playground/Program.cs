@@ -29,7 +29,7 @@ namespace Playground
             var s = new Submission.Client();
 
             // Retrieval and management need to log in to subdomain
-            var r = new Retrieval.Client
+            var retrieve = new Retrieval.Client
                 ( ConfigurationManager.AppSettings["username"]
                 , ConfigurationManager.AppSettings["password"]
                 , ConfigurationManager.AppSettings["subdomain"]
@@ -37,12 +37,12 @@ namespace Playground
 
             // Create new tmp input 
             // Might change/add API to GetOrCreate like IronMQ
-            var tmp = await r.CreateHttpInputAsync(string.Format("tmp{0}", DateTime.Now.Ticks));
+            var tmp = await retrieve.CreateHttpInputAsync(string.Format("tmp{0}", DateTime.Now.Ticks));
 
             Console.WriteLine(tmp.Value.Name);
 
             // Look up the newly created input
-            var inputs = await from i in r.GetInputsAsync()
+            var inputs = await from i in retrieve.GetInputsAsync()
                          where i.Name == tmp.Value.Name
                          select i;
             
@@ -65,7 +65,7 @@ namespace Playground
                 }
 
                 // Check if the values were received
-                var q = await (from e in r.QueryEventsAsync()
+                var q = await (from e in retrieve.QueryEventsAsync()
                                where e.InputName == tmp.Value.Name
                                   && e["alert"].Matches("O*") //!e["alert"].Matches("Z*")
                                select new { Foo = e.Text.ToUpper(), Bar = e.TimeStamp });
@@ -76,7 +76,7 @@ namespace Playground
            }
 
             // Clean up the queue
-            var d = await r.DeleteHttpInputAsync(tmp.Value);
+            var d = await retrieve.DeleteHttpInputAsync(tmp.Value);
 
             Console.ReadLine();
         }

@@ -115,7 +115,10 @@ namespace Loggly.Retrieval
             Expression parent;
             public override Expression Visit(Expression node)
             {
-                if (_fields == null) return node;
+                if (_fields == null)
+                {
+                    return node;
+                }
                 if (node.NodeType != ExpressionType.Parameter)
                 {
                     var _parent = parent;

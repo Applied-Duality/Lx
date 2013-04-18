@@ -68,13 +68,12 @@ namespace Playground
                 var q = await (from e in r.QueryEventsAsync()
                                where e.InputName == tmp.Value.Name
                                   && e["alert"].Matches("O*") //!e["alert"].Matches("Z*")
-                               select e);
-                               //new Event { Text = e.Text.ToUpper(), TimeStamp = e.TimeStamp });
+                               select new { Foo = e.Text.ToUpper(), Bar = e.TimeStamp });
 
                 // Show us what you got ...
                 Console.WriteLine("found {0} results", q.Length);
                 foreach(var result in q) Console.WriteLine(result.ToString());
-            }
+           }
 
             // Clean up the queue
             var d = await r.DeleteHttpInputAsync(tmp.Value);

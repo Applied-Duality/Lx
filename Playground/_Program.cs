@@ -3,9 +3,7 @@
 // See License.txt in the project root for license information.
 #endregion
 
-using Loggly;
 using System.Configuration;
-using System.Threading.Tasks;
 
 namespace Playground
 {

@@ -3,7 +3,6 @@
 // See License.txt in the project root for license information.
 #endregion
 
-using Loggly;
 using System;
 using System.Configuration;
 using System.Json;
@@ -26,7 +25,7 @@ namespace Playground
         {
             // Submission client does not need to authenticate
             // gets the Url from the HttpInput
-            var s = new Submission.Client();
+            var submission = new Submission.Client();
 
             // Retrieval and management need to log in to subdomain
             var retrieve = new Retrieval.Client
@@ -50,18 +49,21 @@ namespace Playground
             {
                 Console.Write("Send a few messages ... ");
                 var m = int.Parse(Console.ReadLine());
+                //var observer = submission.CreateObserver(new { alert = "" }, tmp.Value);
                 for (var n = 0; n < m; n++)
                 {
                     // submitting events can take several seconds (> 10)
                     // use .ToBackGround() to fire and forget
                     // or put tasks in a list and call .WhenAll to await all
                     // Also, despite returning 200 OK, some events seem to dissapear
-                    // (or may show up much later, I don't know)
-                    var b = await s.PostMessageAsync
-                            (tmp.Value, 
-                            new JsonObject { { "alert", string.Format("Oops I did it again {0}", n) } });
+                    // (or may show up much later, or get out of order)
+                    var b = await submission.PostMessageAsync
+                            ( tmp.Value
+                            , new { alert = string.Format("Oops I did it again {0}", n) }
+                            );
 
                     Console.WriteLine("{0}-->{1}", n, b);
+
                 }
 
                 // Check if the values were received

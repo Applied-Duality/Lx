@@ -16,13 +16,13 @@ namespace Loggly
 
         public static string Serialize<T>(this T value)
         {
-            return ServiceStack.Text.TypeSerializer.SerializeToString<T>(value);
+            return ServiceStack.Text.JsonSerializer.SerializeToString(value);
         }
 
         public static T Deserialize<T>(this string s, T dummy)
         {
             ServiceStack.Text.TypeConfig<T>.EnableAnonymousFieldSetters = true;
-            return ServiceStack.Text.TypeSerializer.DeserializeFromString<T>(s);
+            return ServiceStack.Text.JsonSerializer.DeserializeFromString<T>(s);
         }
     }
 }

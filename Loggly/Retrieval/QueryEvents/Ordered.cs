@@ -27,17 +27,17 @@ namespace Loggly.Retrieval
             _descending = descending;
         }
 
-        public ProjectedEvents Select(Expression<Func<Loggly.Event, Loggly.Event>> selector)
+        public ProjectedEvents<Loggly.Event> Select(Expression<Func<Loggly.Event, Loggly.Event>> selector)
         {
-            return new ProjectedEvents(_client, _pattern, _timeRange, _descending, selector);
+            return new ProjectedEvents<Loggly.Event>(_client, _pattern, _timeRange, _descending, selector);
         }
-        public SkippedEvents Skip(int n)
+        public SkippedEvents<Loggly.Event> Skip(int n)
         {
-            return new SkippedEvents(_client, _pattern, _timeRange,  _descending, null, n);
+            return new SkippedEvents<Loggly.Event>(_client, _pattern, _timeRange, _descending, x=>x, n);
         }
-        public TakenEvents Take(int n)
+        public TakenEvents<Loggly.Event> Take(int n)
         {
-            return new TakenEvents(_client, _pattern, _timeRange, _descending, null, 0, n);
+            return new TakenEvents<Loggly.Event>(_client, _pattern, _timeRange, _descending, x=>x, 0, n);
         }
 
         public TaskAwaiter<Loggly.Event[]> GetAwaiter()

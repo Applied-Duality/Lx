@@ -13,18 +13,18 @@ using System.Threading.Tasks;
 
 namespace Loggly.Retrieval
 {
-    public struct TakenEvents
+    public struct TakenEvents<T>
     {
         HttpClient _client;
         Func<FilteredEvents.Event, FilteredEvents.Bool> _pattern;
         Func<DatedEvents.Event, DatedEvents.Bool> _timeRange;
         bool _descending;
-        Expression<Func<Event, Event>> _selector;
+        Expression<Func<Event, T>> _selector;
         int _skip;
         int _take;
 
         public TakenEvents
-            (HttpClient client, Func<FilteredEvents.Event, FilteredEvents.Bool> pattern, Func<DatedEvents.Event, DatedEvents.Bool> timeRange, bool descending, Expression<Func<Event, Event>> selector, int skip, int take)
+            (HttpClient client, Func<FilteredEvents.Event, FilteredEvents.Bool> pattern, Func<DatedEvents.Event, DatedEvents.Bool> timeRange, bool descending, Expression<Func<Event, T>> selector, int skip, int take)
         {
             _client = client;
             _pattern = pattern;
@@ -35,12 +35,15 @@ namespace Loggly.Retrieval
             _take = take;
         }
 
-        async Task<Event[]> _GetEventsAsync()
+        async Task<T[]> _GetEventsAsync()
         {
             var query = new Dictionary<string, string>();
 
-            if (_pattern != null) query["q"] = _pattern(default(FilteredEvents.Event))._pattern;
-            else query["q"] = "*";
+            query["q"] = "*";
+            if (_pattern != null)
+            {
+                query["q"] = _pattern(default(FilteredEvents.Event))._pattern;
+            }
 
             if (_timeRange != null)
             {
@@ -51,9 +54,12 @@ namespace Loggly.Retrieval
                     query["until"] = t._end.ToString("yyyy-MM-dd HH:mm:ss.fffzzzz");
             }
 
-            if (!_descending) query["order"] = "asc";
+            if (!_descending)
+            {
+                query["order"] = "asc";
+            }
 
-            if (_selector != null)
+            if (_selector != null) // should never be null
             {
                 var fields = Fields.Collect(_selector.Body);
                 if (fields != null)
@@ -62,11 +68,15 @@ namespace Loggly.Retrieval
                 }
             }
 
-            
+            if (_skip > 0)
+            {
+                query["start"] = _skip.ToString();
+            }
 
-            if(_skip > 0) query["start"] = _skip.ToString();
-
-            if (_take > 0 && _take != 10) query["rows"] = _take.ToString();
+            if (_take > 0 && _take != 10)
+            {
+                query["rows"] = _take.ToString();
+            }
 
             var queryString = string.Join("&", query.Select(kv => string.Format("{0}={1}", kv.Key, kv.Value)));
 
@@ -76,20 +86,16 @@ namespace Loggly.Retrieval
             {
                 var results = await response.Content.ReadAsStringAsync();
                 var raw = SearchResults.Parse(results);
-                if (_selector != null)
-                {
-                    var transform = _selector.Compile();
-                    raw = raw.Select(transform);
-                }
-                return raw.ToArray();
+                var transform = _selector.Compile();
+                return raw.Select(transform).ToArray();
             }
             else
             {
-                return new Loggly.Event[]{};
+                return new T[]{};
             }
         }
 
-        public TaskAwaiter<Event[]> GetAwaiter()
+        public TaskAwaiter<T[]> GetAwaiter()
         {
             return _GetEventsAsync().GetAwaiter();
         }
@@ -123,7 +129,7 @@ namespace Loggly.Retrieval
 
             protected override Expression VisitParameter(ParameterExpression node)
             {
-                if (parent.NodeType == ExpressionType.MemberAccess)
+                if (parent != null && parent.NodeType == ExpressionType.MemberAccess)
                 {
                     var field = (parent as MemberExpression).Member.Name.ToLowerInvariant();
                     _fields.Add(field);

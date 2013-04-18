@@ -10,20 +10,20 @@ using System.Runtime.CompilerServices;
 using Loggly; 
 namespace Loggly.Retrieval
 {
-    public struct ProjectedEvents
+    public struct ProjectedEvents<T> 
     {
         HttpClient _client;
         Func<FilteredEvents.Event, FilteredEvents.Bool> _pattern;
         Func<DatedEvents.Event, DatedEvents.Bool> _timeRange;
         bool _descending;
-        Expression<Func<Event, Event>> _selector;
+        Expression<Func<Event, T>> _selector;
 
         public ProjectedEvents
             (HttpClient client
             , Func<FilteredEvents.Event, FilteredEvents.Bool> pattern
             , Func<DatedEvents.Event, DatedEvents.Bool> timeRange
             , bool descending
-            , Expression<Func<Event, Event>> selector
+            , Expression<Func<Event, T>> selector
             )
         {
             _client = client;
@@ -33,16 +33,16 @@ namespace Loggly.Retrieval
             _selector = selector;
         }
 
-        public SkippedEvents Skip(int n)
+        public SkippedEvents<T> Skip(int n)
         {
-            return new SkippedEvents(_client, _pattern, _timeRange,  _descending, _selector, n);
+            return new SkippedEvents<T>(_client, _pattern, _timeRange,  _descending, _selector, n);
         }
-        public TakenEvents Take(int n)
+        public TakenEvents<T> Take(int n)
         {
-            return new TakenEvents(_client, _pattern, _timeRange, _descending, _selector, 0, n);
+            return new TakenEvents<T>(_client, _pattern, _timeRange, _descending, _selector, 0, n);
         }
 
-        public TaskAwaiter<Event[]> GetAwaiter()
+        public TaskAwaiter<T[]> GetAwaiter()
         {
             return this.Take(10).GetAwaiter();
         }

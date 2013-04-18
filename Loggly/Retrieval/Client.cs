@@ -68,7 +68,7 @@ namespace Loggly.Retrieval
 
         public Events QueryEventsAsync()
         {
-            return new Loggly.Retrieval.Events(_client);
+            return new Events(_client);
         }
     }
 }

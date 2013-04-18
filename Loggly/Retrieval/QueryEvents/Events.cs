@@ -32,17 +32,17 @@ namespace Loggly.Retrieval
         {
             return new OrderedEvents(_client, null, null, true);
         }
-        public ProjectedEvents Select(Expression<Func<Event, Event>> selector)
+        public ProjectedEvents<T> Select<T>(Expression<Func<Event, T>> selector)
         {
-            return new ProjectedEvents(_client, null, null, true, selector);
+            return new ProjectedEvents<T>(_client, null, null, true, selector);
         }
-        public SkippedEvents Skip(int n)
+        public SkippedEvents<Loggly.Event> Skip(int n)
         {
-            return new SkippedEvents(_client, null, null, true, null, n);
+            return new SkippedEvents<Loggly.Event>(_client, null, null, true, x=>x, n);
         }
-        public TakenEvents Take(int n)
+        public TakenEvents<Loggly.Event> Take(int n)
         {
-            return new TakenEvents(_client, null, null, true, null, 0, n);
+            return new TakenEvents<Loggly.Event>(_client, null, null, true, x=>x, 0, n);
         }
 
         public TaskAwaiter<Event[]> GetAwaiter()

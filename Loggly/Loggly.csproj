@@ -52,7 +52,6 @@
     <Compile Include="Retrieval\QueryEvents\Filtered.cs" />
     <Compile Include="Retrieval\QueryEvents\Ordered.cs" />
     <Compile Include="Retrieval\QueryEvents\Projected.cs" />
-    <Compile Include="Retrieval\QueryEvents\Query.cs" />
     <Compile Include="Retrieval\QueryEvents\Skipped.cs" />
     <Compile Include="Retrieval\QueryEvents\Taken.cs" />
     <Compile Include="Submission\Client.cs" />

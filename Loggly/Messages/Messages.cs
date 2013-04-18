@@ -7,23 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Json;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
 
+// http://json2csharp.com/
 namespace Loggly
 {
-    //// id', 'timestamp', 'ip', 'inputname', 'text'.
-    //public struct Event
-    //{
-    //    public int Id;
-    //    public DateTimeOffset TimeStamp;
-    //    public string Ip;
-    //    public string Text;
-    //    public JsonValue Json;
-    //    public string InputName;
-    //}
-
     public enum EventFormat { Other, Text, Json }
 
     public static class SearchResults
@@ -35,6 +22,7 @@ namespace Loggly
             return (xs).Select(input => new Event(input));
         }
     }
+
     public class Event
     {
         dynamic _json;
@@ -76,6 +64,11 @@ namespace Loggly
 
     public struct HttpInput
     {
+        public static HttpInput Parse(string json)
+        {
+            return new HttpInput(json);
+        }
+
         dynamic _json;
         public HttpInput(JsonValue json) { this._json = json; }
         public HttpInput(string json):this(JsonValue.Parse(json)) {  }
@@ -108,29 +101,14 @@ namespace Loggly
         }
     }
 
-    public struct _HttpInputs
+    public static class HttpInputs
     {
-        dynamic _json;
-        internal _HttpInputs(string json) 
-        { 
-            var p = JsonValue.Parse(json);
-            if (p.JsonType != JsonType.Array) p = new JsonArray(p); 
-            _json = p;
-
-        }
-
-        public IEnumerable<HttpInput> Inputs
+        public static HttpInput[] Parse(string json)
         {
-            get 
-            {
-                var xs = _json as IEnumerable<JsonValue>;
-                return (xs).Select(input => new HttpInput(input)); 
-            }
-        }
-
-        public override string ToString()
-        {
-            return _json.ToString();
+            var _json = JsonValue.Parse(json);
+            if (_json.JsonType != JsonType.Array) _json = new JsonArray(_json);
+            var xs = _json as IEnumerable<JsonValue>;
+            return (xs).Select(input => new HttpInput(input)).ToArray(); 
         }
     }
 }

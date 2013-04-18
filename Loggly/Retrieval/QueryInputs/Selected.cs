@@ -39,7 +39,7 @@ namespace Loggly.Retrieval
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                return new _HttpInputs(json).Inputs.ToArray();
+                return HttpInputs.Parse(json);
             }
             else
             {

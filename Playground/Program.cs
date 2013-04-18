@@ -52,11 +52,6 @@ namespace Playground
                 //var observer = submission.CreateObserver(new { alert = "" }, tmp.Value);
                 for (var n = 0; n < m; n++)
                 {
-                    // submitting events can take several seconds (> 10)
-                    // use .ToBackGround() to fire and forget
-                    // or put tasks in a list and call .WhenAll to await all
-                    // Also, despite returning 200 OK, some events seem to dissapear
-                    // (or may show up much later, or get out of order)
                     var b = await submission.PostMessageAsync
                             ( tmp.Value
                             , new { alert = string.Format("Oops I did it again {0}", n) }

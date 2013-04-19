@@ -47,7 +47,7 @@ namespace Playground
             
             if (inputs.Length != 0)
             {
-                Console.Write("Send a few messages ... ");
+                Console.Write("Send a few messages ... "); 
                 var m = int.Parse(Console.ReadLine());
                 //var observer = submission.CreateObserver(new { alert = "" }, tmp.Value);
                 for (var n = 0; n < m; n++)
